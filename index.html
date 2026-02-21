@@ -3,168 +3,555 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OC Local Guide 🌴</title>
+  <title>OC Local Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --sand:   #f5f0e8;
+      --ocean:  #1a3a5c;
+      --coral:  #e8674a;
+      --mist:   #8aa8c0;
+      --white:  #ffffff;
+      --dark:   #0d1f2d;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f8ff; color: #333; }
-    header {
-      background: linear-gradient(135deg, #005a9e, #0078d4);
-      color: white; padding: 24px 40px;
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--sand);
+      color: var(--dark);
+      overflow-x: hidden;
     }
-    header h1 { font-size: 2em; }
-    header p  { opacity: .9; margin-top: 4px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 22px 48px;
+      background: rgba(245,240,232,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(26,58,92,0.08);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5em; font-weight: 300; letter-spacing: 0.04em;
+      color: var(--ocean);
+    }
+    .nav-logo span { color: var(--coral); font-style: italic; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      font-size: 0.82em; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ocean);
+      text-decoration: none; opacity: 0.7; transition: opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; }
+
+    /* ── HERO COLLAGE ── */
     .hero {
-      background: linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
-        url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Newport_Beach_Pier.jpg/1280px-Newport_Beach_Pier.jpg')
-        center/cover no-repeat;
-      height: 260px; display:flex; align-items:center; justify-content:center; text-align:center;
+      height: 100vh; position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 4px;
+      overflow: hidden;
     }
-    .hero h2 { color:white; font-size:2em; text-shadow:1px 1px 4px rgba(0,0,0,.5); }
-    .hero p  { color:white; margin-top:8px; font-size:1.05em; opacity:.9; }
-    .cards {
-      display:flex; flex-wrap:wrap; justify-content:center;
-      gap:18px; padding:40px 20px;
+
+    .hero-cell {
+      position: relative; overflow: hidden;
+      background: var(--ocean);
     }
-    .card {
-      background:white; border-radius:12px;
-      box-shadow:0 2px 12px rgba(0,90,158,.12);
-      padding:24px 20px; width:200px; text-align:center; transition:transform .2s;
+    .hero-cell img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 8s ease;
+      filter: brightness(0.75) saturate(1.1);
     }
-    .card:hover { transform:translateY(-4px); }
-    .card .icon { font-size:2.5em; }
-    .card h3 { color:#005a9e; margin:10px 0 6px; }
-    .card p  { font-size:.85em; color:#666; line-height:1.4; }
-    #chat-toggle {
-      position:fixed; bottom:28px; right:28px;
-      background:#005a9e; color:white; border:none; border-radius:50px;
-      padding:16px 24px; font-size:1em; cursor:pointer;
-      box-shadow:0 4px 16px rgba(0,90,158,.4); z-index:1000;
-      display:flex; align-items:center; gap:8px;
+    .hero-cell:hover img { transform: scale(1.06); }
+
+    /* special spanning cells */
+    .hero-cell.span-r2 { grid-row: span 2; }
+
+    /* overlay across entire hero */
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 2;
+      background: linear-gradient(
+        135deg,
+        rgba(13,31,45,0.55) 0%,
+        rgba(26,58,92,0.2) 50%,
+        rgba(232,103,74,0.15) 100%
+      );
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; padding: 20px;
     }
-    #chat-toggle:hover { background:#0078d4; }
-    #chat-window {
-      display:none; position:fixed; bottom:90px; right:28px;
-      width:370px; height:520px; background:white; border-radius:16px;
-      box-shadow:0 8px 32px rgba(0,0,0,.18); z-index:1000;
-      flex-direction:column; overflow:hidden;
+
+    .hero-eyebrow {
+      font-size: 0.75em; font-weight: 500; letter-spacing: 0.25em;
+      text-transform: uppercase; color: rgba(255,255,255,0.7);
+      margin-bottom: 16px;
+      animation: fadeUp 1s ease both;
     }
-    #chat-window.open { display:flex; }
-    #chat-header {
-      background:linear-gradient(135deg,#005a9e,#0078d4);
-      color:white; padding:16px 20px;
-      display:flex; justify-content:space-between; align-items:center;
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5em, 8vw, 7em);
+      font-weight: 300; line-height: 1.05;
+      color: var(--white);
+      animation: fadeUp 1s ease 0.15s both;
     }
-    #chat-header span { font-weight:bold; }
-    #chat-close { background:none; border:none; color:white; font-size:1.4em; cursor:pointer; }
-    #chat-messages {
-      flex:1; overflow-y:auto; padding:16px;
-      display:flex; flex-direction:column; gap:10px; background:#f8fbff;
+    .hero-title em {
+      font-style: italic; color: #f0b090;
     }
-    .msg { max-width:88%; padding:10px 14px; border-radius:12px; line-height:1.5; font-size:.93em; }
-    .msg.bot  { background:#e8f0fe; color:#1a1a2e; align-self:flex-start; border-bottom-left-radius:4px; }
-    .msg.user { background:#005a9e; color:white; align-self:flex-end; border-bottom-right-radius:4px; }
-    .msg.thinking { color:#888; font-style:italic; }
-    #chat-input-area {
-      display:flex; padding:12px; gap:8px;
-      border-top:1px solid #e0e0e0; background:white;
+    .hero-sub {
+      font-size: 1em; font-weight: 300;
+      color: rgba(255,255,255,0.8);
+      margin-top: 18px; max-width: 420px; line-height: 1.6;
+      animation: fadeUp 1s ease 0.3s both;
+    }
+    .hero-cta {
+      margin-top: 36px;
+      display: flex; gap: 14px;
+      animation: fadeUp 1s ease 0.45s both;
+    }
+    .btn-primary {
+      background: var(--coral); color: white;
+      border: none; border-radius: 2px;
+      padding: 14px 32px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.85em; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { background: #d4553a; transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: white;
+      border: 1px solid rgba(255,255,255,0.5); border-radius: 2px;
+      padding: 14px 32px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.85em; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .btn-outline:hover { border-color: white; transform: translateY(-2px); }
+
+    .scroll-hint {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      z-index: 3; display: flex; flex-direction: column; align-items: center;
+      gap: 8px; color: rgba(255,255,255,0.5);
+      font-size: 0.7em; letter-spacing: 0.15em; text-transform: uppercase;
+      animation: fadeUp 1s ease 0.6s both;
+    }
+    .scroll-line {
+      width: 1px; height: 40px; background: rgba(255,255,255,0.3);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    /* ── EXPLORE STRIP ── */
+    .explore {
+      background: var(--ocean);
+      padding: 80px 48px;
+    }
+    .explore-label {
+      font-size: 0.72em; font-weight: 500; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--mist);
+      margin-bottom: 48px;
+    }
+    .explore-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 2px;
+    }
+    .explore-item {
+      padding: 32px 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .explore-item:hover { background: rgba(255,255,255,0.04); }
+    .explore-icon { font-size: 1.8em; margin-bottom: 14px; }
+    .explore-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3em; font-weight: 300;
+      color: var(--white); margin-bottom: 6px;
+    }
+    .explore-desc {
+      font-size: 0.78em; color: var(--mist);
+      line-height: 1.5; font-weight: 300;
+    }
+
+    /* ── ABOUT STRIP ── */
+    .about {
+      padding: 100px 48px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .about-text h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2em, 4vw, 3.2em);
+      font-weight: 300; line-height: 1.2;
+      color: var(--ocean); margin-bottom: 24px;
+    }
+    .about-text h2 em { font-style: italic; color: var(--coral); }
+    .about-text p {
+      font-size: 0.95em; line-height: 1.8;
+      color: #4a5f72; font-weight: 300;
+      margin-bottom: 16px;
+    }
+    .about-img {
+      position: relative; border-radius: 2px; overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+    .about-img img { width: 100%; height: 100%; object-fit: cover; }
+    .about-img::after {
+      content: ''; position: absolute; inset: 0;
+      border: 1px solid rgba(26,58,92,0.15);
+      border-radius: 2px; pointer-events: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      padding: 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3em; font-weight: 300;
+      color: rgba(255,255,255,0.6);
+    }
+    .footer-logo span { color: var(--coral); font-style: italic; }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-links a {
+      font-size: 0.78em; letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.4); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: rgba(255,255,255,0.8); }
+
+    /* ── CHAT WIDGET ── */
+    #chat-fab {
+      position: fixed; bottom: 32px; right: 32px; z-index: 500;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: var(--coral); border: none; cursor: pointer;
+      box-shadow: 0 4px 24px rgba(232,103,74,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4em;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #chat-fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 32px rgba(232,103,74,0.6);
+    }
+    #chat-fab.open { background: var(--ocean); }
+
+    #chat-panel {
+      position: fixed; bottom: 104px; right: 32px; z-index: 500;
+      width: 380px; height: 540px;
+      background: var(--white); border-radius: 4px;
+      box-shadow: 0 16px 64px rgba(13,31,45,0.2);
+      display: flex; flex-direction: column;
+      opacity: 0; transform: translateY(16px) scale(0.97);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    #chat-panel.open {
+      opacity: 1; transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+
+    .chat-head {
+      background: var(--ocean);
+      padding: 20px 22px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-radius: 4px 4px 0 0;
+    }
+    .chat-head-info { display: flex; align-items: center; gap: 12px; }
+    .chat-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--coral);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1em;
+    }
+    .chat-head-text { }
+    .chat-head-name {
+      font-size: 0.9em; font-weight: 500; color: white;
+    }
+    .chat-head-status {
+      font-size: 0.72em; color: var(--mist); margin-top: 1px;
+    }
+    .chat-head-status::before {
+      content: '●'; color: #4ade80; margin-right: 4px; font-size: 0.7em;
+    }
+    .chat-close-btn {
+      background: none; border: none; color: rgba(255,255,255,0.5);
+      cursor: pointer; font-size: 1.2em; line-height: 1;
+      transition: color 0.2s;
+    }
+    .chat-close-btn:hover { color: white; }
+
+    .chat-msgs {
+      flex: 1; overflow-y: auto; padding: 20px 18px;
+      display: flex; flex-direction: column; gap: 12px;
+      background: #fafbfc;
+    }
+    .chat-msgs::-webkit-scrollbar { width: 4px; }
+    .chat-msgs::-webkit-scrollbar-track { background: transparent; }
+    .chat-msgs::-webkit-scrollbar-thumb { background: #dde3ea; border-radius: 2px; }
+
+    .msg {
+      max-width: 86%; padding: 11px 15px;
+      font-size: 0.88em; line-height: 1.6;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .msg.bot {
+      background: white; color: var(--dark);
+      border-radius: 2px 14px 14px 2px;
+      align-self: flex-start;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border-left: 2px solid var(--coral);
+    }
+    .msg.user {
+      background: var(--ocean); color: white;
+      border-radius: 14px 2px 2px 14px;
+      align-self: flex-end;
+    }
+    .msg.thinking {
+      background: white; color: #aab4be;
+      font-style: italic; font-size: 0.82em;
+      border-radius: 2px 14px 14px 2px;
+      align-self: flex-start;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border-left: 2px solid #dde3ea;
+    }
+
+    .chat-input-row {
+      display: flex; gap: 0;
+      border-top: 1px solid #edf0f3;
+      background: white;
+      border-radius: 0 0 4px 4px;
+      overflow: hidden;
     }
     #chat-input {
-      flex:1; padding:10px 14px; border:1px solid #c0d4e8;
-      border-radius:8px; font-size:.93em; outline:none;
+      flex: 1; padding: 16px 18px;
+      border: none; outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88em; color: var(--dark);
+      background: transparent;
     }
-    #chat-input:focus { border-color:#005a9e; }
+    #chat-input::placeholder { color: #aab4be; }
     #chat-send {
-      background:#005a9e; color:white; border:none;
-      border-radius:8px; padding:10px 16px; cursor:pointer; font-size:1em;
+      background: var(--coral); color: white; border: none;
+      padding: 0 22px; cursor: pointer; font-size: 1.1em;
+      transition: background 0.2s;
     }
-    #chat-send:hover { background:#0078d4; }
-    footer {
-      background:#005a9e; color:white;
-      text-align:center; padding:24px; margin-top:20px;
+    #chat-send:hover { background: #d4553a; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    footer a { color:#90caf9; text-decoration:none; }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50%       { opacity: 1;   transform: scaleY(1.2); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+      .hero-cell.span-r2 { grid-row: span 1; }
+      .hero-title { font-size: 3em; }
+      .about { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; }
+      .about-img { order: -1; }
+      .explore { padding: 60px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+      #chat-panel { width: calc(100vw - 32px); right: 16px; bottom: 88px; }
+      #chat-fab { right: 16px; bottom: 16px; }
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>🌴 OC Local Guide</h1>
-  <p>Your guide to the best of Orange County, California</p>
-</header>
-
-<div class="hero">
-  <div>
-    <h2>Discover Orange County</h2>
-    <p>Ask our AI guide anything — available in multiple languages! 💬</p>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">OC <span>Guide</span></div>
+  <div class="nav-links">
+    <a href="#explore">Explore</a>
+    <a href="#about">About</a>
+    <a href="#" onclick="openChat()">Ask the Guide</a>
   </div>
-</div>
+</nav>
 
-<div class="cards">
-  <div class="card"><div class="icon">🏖️</div><h3>Beaches</h3><p>Laguna, Newport, Huntington & Crystal Cove</p></div>
-  <div class="card"><div class="icon">🍽️</div><h3>Dining</h3><p>Local restaurants, food halls & hidden gems</p></div>
-  <div class="card"><div class="icon">🎡</div><h3>Attractions</h3><p>Theme parks, museums & cultural spots</p></div>
-  <div class="card"><div class="icon">🌿</div><h3>Outdoors</h3><p>Hiking, kayaking, parks & nature reserves</p></div>
-  <div class="card"><div class="icon">🛍️</div><h3>Shopping</h3><p>South Coast Plaza, Fashion Island & boutiques</p></div>
-  <div class="card"><div class="icon">🎉</div><h3>Events</h3><p>Festivals, fairs & local happenings</p></div>
-</div>
+<!-- HERO COLLAGE -->
+<section class="hero" id="home">
 
+  <!-- 5-cell collage layout -->
+  <div class="hero-cell span-r2">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Laguna_Beach%2C_CA_-_panoramio_%282%29.jpg/1280px-Laguna_Beach%2C_CA_-_panoramio_%282%29.jpg"
+         alt="Laguna Beach" loading="eager"/>
+  </div>
+  <div class="hero-cell">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Newport_Beach_Pier.jpg/1280px-Newport_Beach_Pier.jpg"
+         alt="Newport Beach Pier" loading="eager"/>
+  </div>
+  <div class="hero-cell">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Huntington_Beach_Pier_at_Dusk.jpg/1280px-Huntington_Beach_Pier_at_Dusk.jpg"
+         alt="Huntington Beach" loading="eager"/>
+  </div>
+  <div class="hero-cell">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Crystal_Cove_State_Park_1.jpg/1280px-Crystal_Cove_State_Park_1.jpg"
+         alt="Crystal Cove" loading="eager"/>
+  </div>
+  <div class="hero-cell">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/San_Juan_Capistrano_Mission.jpg/1280px-San_Juan_Capistrano_Mission.jpg"
+         alt="San Juan Capistrano" loading="eager"/>
+  </div>
+
+  <!-- Text overlay -->
+  <div class="hero-overlay">
+    <p class="hero-eyebrow">Orange County, California</p>
+    <h1 class="hero-title">Live the<br/><em>California</em><br/>Dream</h1>
+    <p class="hero-sub">Your personal guide to the best beaches, food, culture and hidden gems across OC.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="openChat()">💬 Ask the Guide</button>
+      <button class="btn-outline" onclick="document.getElementById('explore').scrollIntoView({behavior:'smooth'})">Explore OC</button>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- EXPLORE -->
+<section class="explore" id="explore">
+  <p class="explore-label">What are you looking for?</p>
+  <div class="explore-grid">
+    <div class="explore-item" onclick="askAbout('Best beaches in Orange County')">
+      <div class="explore-icon">🏖️</div>
+      <div class="explore-name">Beaches</div>
+      <div class="explore-desc">Laguna, Newport, Huntington & Crystal Cove</div>
+    </div>
+    <div class="explore-item" onclick="askAbout('Best restaurants in Orange County')">
+      <div class="explore-icon">🍽️</div>
+      <div class="explore-name">Dining</div>
+      <div class="explore-desc">Local gems, food halls & ocean-view dining</div>
+    </div>
+    <div class="explore-item" onclick="askAbout('Top attractions in Orange County')">
+      <div class="explore-icon">🎡</div>
+      <div class="explore-name">Attractions</div>
+      <div class="explore-desc">Theme parks, museums & cultural spots</div>
+    </div>
+    <div class="explore-item" onclick="askAbout('Outdoor activities in Orange County')">
+      <div class="explore-icon">🌿</div>
+      <div class="explore-name">Outdoors</div>
+      <div class="explore-desc">Hiking, kayaking & nature reserves</div>
+    </div>
+    <div class="explore-item" onclick="askAbout('Best shopping in Orange County')">
+      <div class="explore-icon">🛍️</div>
+      <div class="explore-name">Shopping</div>
+      <div class="explore-desc">South Coast Plaza, Fashion Island & boutiques</div>
+    </div>
+    <div class="explore-item" onclick="askAbout('Events and festivals in Orange County')">
+      <div class="explore-icon">🎉</div>
+      <div class="explore-name">Events</div>
+      <div class="explore-desc">Festivals, fairs & local happenings</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-text">
+    <h2>Your local guide to <em>everything</em> OC</h2>
+    <p>Orange County is more than Disneyland. It's 42 miles of stunning coastline, world-class art festivals, hidden canyon trails, and some of the best food in Southern California.</p>
+    <p>Our AI guide knows it all — and speaks your language. Ask in English, Spanish, Vietnamese, Korean, Chinese or any language. You'll always get a local's answer.</p>
+    <button class="btn-primary" style="margin-top:12px" onclick="openChat()">Start Exploring →</button>
+  </div>
+  <div class="about-img">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Laguna_Beach%2C_CA_-_panoramio_%282%29.jpg/1280px-Laguna_Beach%2C_CA_-_panoramio_%282%29.jpg"
+         alt="Orange County coastline"/>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  <p>💬 Use the chat button to ask our AI guide anything — in any language!</p>
-  <p style="margin-top:8px;font-size:.85em;opacity:.8;">
-    <a href="https://discoveroc.com" target="_blank">DiscoverOC</a> |
-    <a href="https://ocparks.com" target="_blank">OC Parks</a> |
+  <div class="footer-logo">OC <span>Guide</span></div>
+  <div class="footer-links">
+    <a href="https://discoveroc.com" target="_blank">DiscoverOC</a>
+    <a href="https://ocparks.com" target="_blank">OC Parks</a>
     <a href="https://visitcalifornia.com" target="_blank">Visit California</a>
-  </p>
+    <a href="#home">Back to top ↑</a>
+  </div>
 </footer>
 
-<button id="chat-toggle" onclick="toggleChat()">💬 Ask the OC Guide</button>
+<!-- CHAT FAB -->
+<button id="chat-fab" onclick="toggleChat()" title="Ask the OC Guide">💬</button>
 
-<div id="chat-window">
-  <div id="chat-header">
-    <span>🌴 OC Local Guide</span>
-    <button id="chat-close" onclick="toggleChat()">✕</button>
+<!-- CHAT PANEL -->
+<div id="chat-panel">
+  <div class="chat-head">
+    <div class="chat-head-info">
+      <div class="chat-avatar">🌴</div>
+      <div class="chat-head-text">
+        <div class="chat-head-name">OC Local Guide</div>
+        <div class="chat-head-status">Online — ask me anything</div>
+      </div>
+    </div>
+    <button class="chat-close-btn" onclick="toggleChat()">✕</button>
   </div>
-  <div id="chat-messages">
-    <div class="msg bot">👋 Hi! I'm your OC Local Guide. Ask me about beaches, restaurants, attractions and events in Orange County! I speak multiple languages — just write in yours! 🌍</div>
+  <div class="chat-msgs" id="chat-msgs">
+    <div class="msg bot">👋 Hi! I'm your OC Local Guide. Ask me about beaches, restaurants, attractions and events across Orange County.<br/><br/>I speak multiple languages — just write in yours! 🌍</div>
   </div>
-  <div id="chat-input-area">
-    <input id="chat-input" type="text" placeholder="Ask about OC..."
+  <div class="chat-input-row">
+    <input id="chat-input" type="text" placeholder="Ask about Orange County..."
            onkeydown="if(event.key==='Enter') sendMessage()"/>
     <button id="chat-send" onclick="sendMessage()">➤</button>
   </div>
 </div>
 
 <script>
-  // ============================================================
-  // YOUR 4 VALUES — replace each one, keep the quote marks
-  // ============================================================
+  // ================================================================
+  // YOUR ONE VALUE TO REPLACE
+  // ================================================================
+  const APIM_KEY  = "e7fb67ca88c744ddacc4248cb3df29a1";
 
-  // 1. APIM Gateway URL  (portal.azure.com → APIM → Overview → Gateway URL)
-  const APIM_URL = "https://oc-guide-apim.azure-api.net";
-
-  // 2. APIM Subscription Key  (APIM → Subscriptions → show keys → Primary key)
-  const APIM_KEY = "eae851577cf744fea5f092cf1551103aY";
-
-  // 3. Agent ID  (ai.azure.com → Agents → your agent → Agent ID)
-  const AGENT_ID = "asst_LBKY7OVc5oS4E9TQLJI2kVCR";
-
-  // 4. Project Path  (ai.azure.com → Overview → Project endpoint → copy from /api/ onwards)
-  //    Example: if endpoint is https://myservice.services.ai.azure.com/api/projects/myproject
-  //    then paste:  /api/projects/myproject
-  const PROJECT_PATH = "/api/projects/kameht-aliso";
-
-  // ============================================================
-  // STOP HERE — do not change anything below this line
-  // ============================================================
+  // These are already correct from our testing — do not change
+  const APIM_BASE = "https://oc-local-guide-apim.azure-api.net/oc-local-guide-agent";
+  const AGENT_ID  = "asst_DKdV2NqeOrx3Wx3F69rUjisG";
+  const API_VER   = "2025-05-15-preview";
+  // ================================================================
 
   let threadId = null;
+  let isOpen   = false;
 
   function toggleChat() {
-    document.getElementById('chat-window').classList.toggle('open');
+    isOpen = !isOpen;
+    document.getElementById('chat-panel').classList.toggle('open', isOpen);
+    document.getElementById('chat-fab').classList.toggle('open', isOpen);
+    document.getElementById('chat-fab').textContent = isOpen ? '✕' : '💬';
+    if (isOpen) setTimeout(() => document.getElementById('chat-input').focus(), 300);
   }
 
-  function addMessage(text, role) {
-    const box = document.getElementById('chat-messages');
+  function openChat() {
+    if (!isOpen) toggleChat();
+  }
+
+  function askAbout(topic) {
+    openChat();
+    setTimeout(() => {
+      document.getElementById('chat-input').value = topic;
+      sendMessage();
+    }, 400);
+  }
+
+  function addMsg(text, role) {
+    const box = document.getElementById('chat-msgs');
     const div = document.createElement('div');
     div.className = 'msg ' + role;
     div.textContent = text;
@@ -174,85 +561,68 @@
   }
 
   async function apiCall(path, method, body) {
-    const response = await fetch(APIM_URL + PROJECT_PATH + path, {
-      method: method,
+    const res = await fetch(`${APIM_BASE}${path}?api-version=${API_VER}`, {
+      method,
       headers: {
         'Content-Type': 'application/json',
         'Ocp-Apim-Subscription-Key': APIM_KEY
       },
       body: body ? JSON.stringify(body) : undefined
     });
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`Error ${response.status}: ${err}`);
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`HTTP ${res.status}: ${err}`);
     }
-    const text = await response.text();
-    return text ? JSON.parse(text) : {};
+    const txt = await res.text();
+    return txt ? JSON.parse(txt) : {};
   }
 
   async function sendMessage() {
-    const input = document.getElementById('chat-input');
+    const input    = document.getElementById('chat-input');
     const userText = input.value.trim();
     if (!userText) return;
     input.value = '';
 
-    addMessage(userText, 'user');
-    const thinking = addMessage('Thinking... 🌴', 'bot thinking');
+    addMsg(userText, 'user');
+    const thinking = addMsg('Thinking… 🌴', 'thinking');
 
     try {
-      // Create a new thread on first message
       if (!threadId) {
-        const thread = await apiCall('/threads?api-version=v1', 'POST', {});
-        threadId = thread.id;
+        const t = await apiCall('/threads', 'POST', {});
+        threadId = t.id;
       }
 
-      // Add user message to thread
-      await apiCall(
-        `/threads/${threadId}/messages?api-version=v1`,
-        'POST',
-        { role: 'user', content: userText }
-      );
+      await apiCall(`/threads/${threadId}/messages`, 'POST',
+        { role: 'user', content: userText });
 
-      // Run your agent (this is where AGENT_ID is used)
-      const run = await apiCall(
-        `/threads/${threadId}/runs?api-version=v1`,
-        'POST',
-        { assistant_id: AGENT_ID }
-      );
+      const run = await apiCall(`/threads/${threadId}/runs`, 'POST',
+        { assistant_id: AGENT_ID });
 
-      // Wait for agent to finish (checks every 2 seconds, up to 60 seconds)
       let status = run.status;
-      let attempts = 0;
-      while (status !== 'completed' && status !== 'failed' && attempts < 30) {
+      let tries  = 0;
+      while (!['completed','failed','cancelled'].includes(status) && tries < 30) {
         await new Promise(r => setTimeout(r, 2000));
-        const check = await apiCall(
-          `/threads/${threadId}/runs/${run.id}?api-version=v1`,
-          'GET'
-        );
+        const check = await apiCall(`/threads/${threadId}/runs/${run.id}`, 'GET');
         status = check.status;
-        attempts++;
+        tries++;
       }
 
-      if (status !== 'completed') throw new Error('Agent timed out. Please try again.');
+      if (status !== 'completed')
+        throw new Error('The agent took too long — please try again.');
 
-      // Get the agent reply
-      const msgs = await apiCall(
-        `/threads/${threadId}/messages?api-version=v1`,
-        'GET'
-      );
-      const latest = msgs.data.find(m => m.role === 'assistant');
-      const reply = latest?.content?.[0]?.text?.value
-        || "Sorry, I didn't get a response. Please try again.";
+      const msgs   = await apiCall(`/threads/${threadId}/messages`, 'GET');
+      const latest = msgs.data?.find(m => m.role === 'assistant');
+      const reply  = latest?.content?.[0]?.text?.value
+                     || 'Sorry, no response received. Please try again.';
 
       thinking.textContent = reply;
-      thinking.classList.remove('thinking');
+      thinking.className   = 'msg bot';
 
     } catch (err) {
-      thinking.textContent = '⚠️ ' + err.message;
-      thinking.classList.remove('thinking');
+      thinking.textContent = `⚠️ ${err.message}`;
+      thinking.className   = 'msg bot';
     }
   }
 </script>
-
 </body>
 </html>
