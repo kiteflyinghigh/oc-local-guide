@@ -7,56 +7,48 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f8ff; color: #333; }
-
     header {
       background: linear-gradient(135deg, #005a9e, #0078d4);
       color: white; padding: 24px 40px;
     }
     header h1 { font-size: 2em; }
-    header p { opacity: 0.9; margin-top: 4px; }
-
+    header p  { opacity: .9; margin-top: 4px; }
     .hero {
-      background: linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),
+      background: linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
         url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Newport_Beach_Pier.jpg/1280px-Newport_Beach_Pier.jpg')
         center/cover no-repeat;
       height: 260px; display:flex; align-items:center; justify-content:center; text-align:center;
     }
-    .hero h2 { color:white; font-size:2em; text-shadow:1px 1px 4px rgba(0,0,0,0.5); }
+    .hero h2 { color:white; font-size:2em; text-shadow:1px 1px 4px rgba(0,0,0,.5); }
     .hero p  { color:white; margin-top:8px; font-size:1.05em; opacity:.9; }
-
     .cards {
       display:flex; flex-wrap:wrap; justify-content:center;
       gap:18px; padding:40px 20px;
     }
     .card {
       background:white; border-radius:12px;
-      box-shadow:0 2px 12px rgba(0,90,158,0.12);
-      padding:24px 20px; width:200px; text-align:center;
-      transition:transform .2s;
+      box-shadow:0 2px 12px rgba(0,90,158,.12);
+      padding:24px 20px; width:200px; text-align:center; transition:transform .2s;
     }
     .card:hover { transform:translateY(-4px); }
     .card .icon { font-size:2.5em; }
     .card h3 { color:#005a9e; margin:10px 0 6px; }
     .card p  { font-size:.85em; color:#666; line-height:1.4; }
-
-    /* CHAT WIDGET */
     #chat-toggle {
       position:fixed; bottom:28px; right:28px;
       background:#005a9e; color:white; border:none; border-radius:50px;
       padding:16px 24px; font-size:1em; cursor:pointer;
-      box-shadow:0 4px 16px rgba(0,90,158,.4);
-      z-index:1000; display:flex; align-items:center; gap:8px;
+      box-shadow:0 4px 16px rgba(0,90,158,.4); z-index:1000;
+      display:flex; align-items:center; gap:8px;
     }
     #chat-toggle:hover { background:#0078d4; }
-
     #chat-window {
       display:none; position:fixed; bottom:90px; right:28px;
       width:370px; height:520px; background:white; border-radius:16px;
-      box-shadow:0 8px 32px rgba(0,0,0,.18);
-      z-index:1000; flex-direction:column; overflow:hidden;
+      box-shadow:0 8px 32px rgba(0,0,0,.18); z-index:1000;
+      flex-direction:column; overflow:hidden;
     }
     #chat-window.open { display:flex; }
-
     #chat-header {
       background:linear-gradient(135deg,#005a9e,#0078d4);
       color:white; padding:16px 20px;
@@ -64,7 +56,6 @@
     }
     #chat-header span { font-weight:bold; }
     #chat-close { background:none; border:none; color:white; font-size:1.4em; cursor:pointer; }
-
     #chat-messages {
       flex:1; overflow-y:auto; padding:16px;
       display:flex; flex-direction:column; gap:10px; background:#f8fbff;
@@ -73,7 +64,6 @@
     .msg.bot  { background:#e8f0fe; color:#1a1a2e; align-self:flex-start; border-bottom-left-radius:4px; }
     .msg.user { background:#005a9e; color:white; align-self:flex-end; border-bottom-right-radius:4px; }
     .msg.thinking { color:#888; font-style:italic; }
-
     #chat-input-area {
       display:flex; padding:12px; gap:8px;
       border-top:1px solid #e0e0e0; background:white;
@@ -88,7 +78,6 @@
       border-radius:8px; padding:10px 16px; cursor:pointer; font-size:1em;
     }
     #chat-send:hover { background:#0078d4; }
-
     footer {
       background:#005a9e; color:white;
       text-align:center; padding:24px; margin-top:20px;
@@ -136,28 +125,39 @@
     <button id="chat-close" onclick="toggleChat()">✕</button>
   </div>
   <div id="chat-messages">
-    <div class="msg bot">👋 Hi! I'm your OC Local Guide. Ask me about beaches, restaurants, attractions, events — anything about Orange County! I speak multiple languages — just write in yours! 🌍</div>
+    <div class="msg bot">👋 Hi! I'm your OC Local Guide. Ask me about beaches, restaurants, attractions and events in Orange County! I speak multiple languages — just write in yours! 🌍</div>
   </div>
   <div id="chat-input-area">
-    <input id="chat-input" type="text" placeholder="Ask about OC..." onkeydown="if(event.key==='Enter') sendMessage()"/>
+    <input id="chat-input" type="text" placeholder="Ask about OC..."
+           onkeydown="if(event.key==='Enter') sendMessage()"/>
     <button id="chat-send" onclick="sendMessage()">➤</button>
   </div>
 </div>
 
 <script>
   // ============================================================
-  // REPLACE THESE FOUR VALUES WITH YOUR OWN (from your Notepad)
-  // ============================================================
-  const APIM_URL   = "https://oc-guide-apim.azure-api.net";    // e.g. https://oc-guide-apim.azure-api.net
-  const APIM_KEY   = "eae851577cf744fea5f092cf1551103a";    // your APIM subscription primary key
-  const MODEL_NAME = "gpt-5-chat-2025-10-03";  // e.g. gpt-4o-mini
-  const SYSTEM_PROMPT = `You are a friendly and knowledgeable local guide for Orange County, 
-California. Help visitors discover beaches, restaurants, attractions, events, and hidden gems. 
-Be warm and enthusiastic. Use emojis where appropriate 🌴🏖️🌊
-IMPORTANT: Always detect the language the user writes in and respond in that same language.`;
+  // YOUR 4 VALUES — replace each one, keep the quote marks
   // ============================================================
 
-  let messages = [{ role: "system", content: SYSTEM_PROMPT }];
+  // 1. APIM Gateway URL  (portal.azure.com → APIM → Overview → Gateway URL)
+  const APIM_URL = "https://oc-guide-apim.azure-api.net";
+
+  // 2. APIM Subscription Key  (APIM → Subscriptions → show keys → Primary key)
+  const APIM_KEY = "eae851577cf744fea5f092cf1551103aY";
+
+  // 3. Agent ID  (ai.azure.com → Agents → your agent → Agent ID)
+  const AGENT_ID = "asst_LBKY7OVc5oS4E9TQLJI2kVCR";
+
+  // 4. Project Path  (ai.azure.com → Overview → Project endpoint → copy from /api/ onwards)
+  //    Example: if endpoint is https://myservice.services.ai.azure.com/api/projects/myproject
+  //    then paste:  /api/projects/myproject
+  const PROJECT_PATH = "/api/projects/kameht-aliso";
+
+  // ============================================================
+  // STOP HERE — do not change anything below this line
+  // ============================================================
+
+  let threadId = null;
 
   function toggleChat() {
     document.getElementById('chat-window').classList.toggle('open');
@@ -173,39 +173,82 @@ IMPORTANT: Always detect the language the user writes in and respond in that sam
     return div;
   }
 
+  async function apiCall(path, method, body) {
+    const response = await fetch(APIM_URL + PROJECT_PATH + path, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Ocp-Apim-Subscription-Key': APIM_KEY
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Error ${response.status}: ${err}`);
+    }
+    const text = await response.text();
+    return text ? JSON.parse(text) : {};
+  }
+
   async function sendMessage() {
     const input = document.getElementById('chat-input');
     const userText = input.value.trim();
     if (!userText) return;
     input.value = '';
 
-    messages.push({ role: "user", content: userText });
     addMessage(userText, 'user');
-    const thinking = addMessage('Thinking...', 'bot thinking');
+    const thinking = addMessage('Thinking... 🌴', 'bot thinking');
 
     try {
-      const response = await fetch(
-        `${APIM_URL}/openai/deployments/${MODEL_NAME}/chat/completions?api-version=2024-10-21`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key': APIM_KEY
-          },
-          body: JSON.stringify({ messages: messages, max_tokens: 800 })
-        }
+      // Create a new thread on first message
+      if (!threadId) {
+        const thread = await apiCall('/threads?api-version=v1', 'POST', {});
+        threadId = thread.id;
+      }
+
+      // Add user message to thread
+      await apiCall(
+        `/threads/${threadId}/messages?api-version=v1`,
+        'POST',
+        { role: 'user', content: userText }
       );
 
-      const data = await response.json();
-      const reply = data.choices?.[0]?.message?.content
-        || "Sorry, I couldn't get a response. Please try again.";
+      // Run your agent (this is where AGENT_ID is used)
+      const run = await apiCall(
+        `/threads/${threadId}/runs?api-version=v1`,
+        'POST',
+        { assistant_id: AGENT_ID }
+      );
 
-      messages.push({ role: "assistant", content: reply });
+      // Wait for agent to finish (checks every 2 seconds, up to 60 seconds)
+      let status = run.status;
+      let attempts = 0;
+      while (status !== 'completed' && status !== 'failed' && attempts < 30) {
+        await new Promise(r => setTimeout(r, 2000));
+        const check = await apiCall(
+          `/threads/${threadId}/runs/${run.id}?api-version=v1`,
+          'GET'
+        );
+        status = check.status;
+        attempts++;
+      }
+
+      if (status !== 'completed') throw new Error('Agent timed out. Please try again.');
+
+      // Get the agent reply
+      const msgs = await apiCall(
+        `/threads/${threadId}/messages?api-version=v1`,
+        'GET'
+      );
+      const latest = msgs.data.find(m => m.role === 'assistant');
+      const reply = latest?.content?.[0]?.text?.value
+        || "Sorry, I didn't get a response. Please try again.";
+
       thinking.textContent = reply;
       thinking.classList.remove('thinking');
 
     } catch (err) {
-      thinking.textContent = "⚠️ Connection error. Please check your setup and try again.";
+      thinking.textContent = '⚠️ ' + err.message;
       thinking.classList.remove('thinking');
     }
   }
