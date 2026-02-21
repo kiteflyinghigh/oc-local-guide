@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OC Local Guide 🌴</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f8ff; color: #333; }
+
+    header {
+      background: linear-gradient(135deg, #005a9e, #0078d4);
+      color: white; padding: 24px 40px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    header h1 { font-size: 2em; }
+    header p { opacity: 0.9; margin-top: 4px; }
+
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Newport_Beach_Pier.jpg/1280px-Newport_Beach_Pier.jpg')
+        center/cover no-repeat;
+      height: 260px; display: flex; align-items: center; justify-content: center; text-align: center;
+    }
+    .hero-text { color: white; }
+    .hero-text h2 { font-size: 2em; text-shadow: 1px 1px 4px rgba(0,0,0,0.5); }
+    .hero-text p { font-size: 1.1em; margin-top: 8px; opacity: 0.9; }
+
+    .cards {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 18px; padding: 40px 20px;
+    }
+    .card {
+      background: white; border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,90,158,0.12);
+      padding: 24px 20px; width: 200px; text-align: center;
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-4px); }
+    .card .icon { font-size: 2.5em; }
+    .card h3 { color: #005a9e; margin: 10px 0 6px; }
+    .card p { font-size: 0.85em; color: #666; line-height: 1.4; }
+
+    /* ---- CHAT WIDGET ---- */
+    #chat-toggle {
+      position: fixed; bottom: 28px; right: 28px;
+      background: #005a9e; color: white;
+      border: none; border-radius: 50px;
+      padding: 16px 24px; font-size: 1em; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,90,158,0.4);
+      z-index: 1000; display: flex; align-items: center; gap: 8px;
+      transition: background 0.2s;
+    }
+    #chat-toggle:hover { background: #0078d4; }
+
+    #chat-window {
+      display: none;
+      position: fixed; bottom: 90px; right: 28px;
+      width: 370px; height: 520px;
+      background: white; border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      z-index: 1000; flex-direction: column; overflow: hidden;
+    }
+    #chat-window.open { display: flex; }
+
+    #chat-header {
+      background: linear-gradient(135deg, #005a9e, #0078d4);
+      color: white; padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #chat-header span { font-weight: bold; font-size: 1em; }
+    #chat-close { background: none; border: none; color: white; font-size: 1.4em; cursor: pointer; }
+
+    #chat-messages {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+      background: #f8fbff;
+    }
+    .msg { max-width: 88%; padding: 10px 14px; border-radius: 12px; line-height: 1.5; font-size: 0.93em; }
+    .msg.bot { background: #e8f0fe; color: #1a1a2e; align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg.user { background: #005a9e; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg.thinking { color: #888; font-style: italic; }
+
+    #chat-input-area {
+      display: flex; padding: 12px; gap: 8px;
+      border-top: 1px solid #e0e0e0; background: white;
+    }
+    #chat-input {
+      flex: 1; padding: 10px 14px; border: 1px solid #c0d4e8;
+      border-radius: 8px; font-size: 0.93em; outline: none;
+    }
+    #chat-input:focus { border-color: #005a9e; }
+    #chat-send {
+      background: #005a9e; color: white; border: none;
+      border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 1em;
+    }
+    #chat-send:hover { background: #0078d4; }
+
+    footer {
+      background: #005a9e; color: white;
+      text-align: center; padding: 24px; margin-top: 20px;
+    }
+    footer a { color: #90caf9; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🌴 OC Local Guide</h1>
+    <p>Your guide to the best of Orange County, California</p>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-text">
+    <h2>Discover Orange County</h2>
+    <p>Ask our AI guide anything — available in multiple languages! 💬</p>
+  </div>
+</div>
+
+<div class="cards">
+  <div class="card"><div class="icon">🏖️</div><h3>Beaches</h3><p>Laguna, Newport, Huntington & Crystal Cove</p></div>
+  <div class="card"><div class="icon">🍽️</div><h3>Dining</h3><p>Local restaurants, food halls & hidden gems</p></div>
+  <div class="card"><div class="icon">🎡</div><h3>Attractions</h3><p>Theme parks, museums & cultural spots</p></div>
+  <div class="card"><div class="icon">🌿</div><h3>Outdoors</h3><p>Hiking, kayaking, parks & nature reserves</p></div>
+  <div class="card"><div class="icon">🛍️</div><h3>Shopping</h3><p>South Coast Plaza, Fashion Island & boutiques</p></div>
+  <div class="card"><div class="icon">🎉</div><h3>Events</h3><p>Festivals, fairs & local happenings</p></div>
+</div>
+
+<footer>
+  <p>💬 Use the chat button to ask our AI guide anything — in any language!</p>
+  <p style="margin-top:8px; font-size:0.85em; opacity:0.8;">
+    Useful links: <a href="https://discoveroc.com" target="_blank">DiscoverOC</a> |
+    <a href="https://ocparks.com" target="_blank">OC Parks</a> |
+    <a href="https://visitcalifornia.com" target="_blank">Visit California</a>
+  </p>
+</footer>
+
+<!-- CHAT BUTTON -->
+<button id="chat-toggle" onclick="toggleChat()">💬 Ask the OC Guide</button>
+
+<!-- CHAT WINDOW -->
+<div id="chat-window">
+  <div id="chat-header">
+    <span>🌴 OC Local Guide</span>
+    <button id="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div id="chat-messages">
+    <div class="msg bot">👋 Hi! I'm your OC Local Guide. Ask me about beaches, restaurants, attractions, events, or anything else about Orange County! I can answer in multiple languages — just write in yours! 🌍</div>
+  </div>
+  <div id="chat-input-area">
+    <input id="chat-input" type="text" placeholder="Ask about OC..." onkeydown="if(event.key==='Enter') sendMessage()"/>
+    <button id="chat-send" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+  // =============================================
+  // REPLACE THESE THREE VALUES WITH YOUR OWN:
+  // =============================================
+  const ENDPOINT  = "YOUR_ENDPOINT_HERE";   // e.g. https://your-project.openai.azure.com/
+  const API_KEY   = "YOUR_API_KEY_HERE";    // your Foundry API key
+  const AGENT_ID  = "YOUR_AGENT_ID_HERE";  // e.g. asst_abc123xyz
+  // =============================================
+
+  let threadId = null;
+
+  function toggleChat() {
+    const win = document.getElementById('chat-window');
+    win.classList.toggle('open');
+  }
+
+  function addMessage(text, role) {
+    const box = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'msg ' + role;
+    div.textContent = text;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+    return div;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const userText = input.value.trim();
+    if (!userText) return;
+    input.value = '';
+    addMessage(userText, 'user');
+    const thinking = addMessage('Thinking...', 'bot thinking');
+
+    try {
+      const baseUrl = ENDPOINT.replace(/\/$/, '');
+      const headers = {
+        'Content-Type': 'application/json',
+        'api-key': API_KEY
+      };
+
+      // Create thread if needed
+      if (!threadId) {
+        const t = await fetch(`${baseUrl}/openai/threads?api-version=2025-01-01-preview`, {
+          method: 'POST', headers, body: JSON.stringify({})
+        });
+        const td = await t.json();
+        threadId = td.id;
+      }
+
+      // Add user message to thread
+      await fetch(`${baseUrl}/openai/threads/${threadId}/messages?api-version=2025-01-01-preview`, {
+        method: 'POST', headers,
+        body: JSON.stringify({ role: 'user', content: userText })
+      });
+
+      // Run the agent
+      const runRes = await fetch(`${baseUrl}/openai/threads/${threadId}/runs?api-version=2025-01-01-preview`, {
+        method: 'POST', headers,
+        body: JSON.stringify({ assistant_id: AGENT_ID })
+      });
+      const runData = await runRes.json();
+      let runId = runData.id;
+
+      // Poll until complete
+      let status = 'queued';
+      while (status !== 'completed' && status !== 'failed') {
+        await new Promise(r => setTimeout(r, 1500));
+        const poll = await fetch(`${baseUrl}/openai/threads/${threadId}/runs/${runId}?api-version=2025-01-01-preview`, { headers });
+        const pollData = await poll.json();
+        status = pollData.status;
+      }
+
+      // Get the response
+      const msgs = await fetch(`${baseUrl}/openai/threads/${threadId}/messages?api-version=2025-01-01-preview`, { headers });
+      const msgsData = await msgs.json();
+      const latest = msgsData.data.find(m => m.role === 'assistant');
+      const reply = latest?.content?.[0]?.text?.value || "Sorry, I couldn't get a response. Please try again.";
+
+      thinking.textContent = reply;
+      thinking.classList.remove('thinking');
+
+    } catch (err) {
+      thinking.textContent = "⚠️ Connection error. Please check your setup and try again.";
+      thinking.classList.remove('thinking');
+    }
+  }
+</script>
+
+</body>
+</html>
